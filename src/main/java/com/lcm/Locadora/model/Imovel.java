@@ -1,9 +1,6 @@
 package com.lcm.Locadora.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Imovel {
@@ -13,7 +10,9 @@ public class Imovel {
     private Long id;
     private String titulo;
     private String descricao;
-    private double valorAluguel;
+    @Column(name = "valor_aluguel")
+    private float valorAluguel;
+
     private String cep;
     private String bairro;
     private String cidade;
@@ -49,7 +48,7 @@ public class Imovel {
         return valorAluguel;
     }
 
-    public void setValorAluguel(double valorAluguel) {
+    public void setValorAluguel(float valorAluguel) {
         this.valorAluguel = valorAluguel;
     }
 

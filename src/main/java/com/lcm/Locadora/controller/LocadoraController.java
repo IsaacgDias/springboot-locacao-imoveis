@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -88,7 +89,24 @@ public class LocadoraController {
         }
     }
 
+    // API Via CEP
+    @GetMapping("/consultaCEP/{cep}")
+    public ResponseEntity<?> consultarCEP(@PathVariable String cep) {
+        // Chamada à API do Via CEP
+        String viaCepUrl = "https://viacep.com.br/ws/" + cep + "/json/";
+        RestTemplate restTemplate = new RestTemplate();
 
+        // Faz a requisição get para obeter a resposta
+        ResponseEntity<String> response = restTemplate.getForEntity(viaCepUrl, String.class);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            String responseBody = response.getBody();
+            return ResponseEntity.ok(responseBody);
+        } else {
+
+            return ResponseEntity.status(response.getStatusCode()).body("Erro ao consultar o CEP.");
+        }
+    }
 }
 
 

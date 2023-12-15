@@ -40,7 +40,7 @@ public class LocadoraController {
     }
 
     // Deletar
-    @GetMapping("/deletarImovel")
+    @DeleteMapping("/deletarImovel")
     public ResponseEntity<String> deletarImovelPorId(@RequestParam Long id) {
         try {
             imovelService.deletarImovelPorId(id);
@@ -50,4 +50,45 @@ public class LocadoraController {
         }
     }
 
+    // antes de editar pega os dados e exibe na página para editar os dados
+    @GetMapping("/getImovelById")
+    public ResponseEntity<Imovel> getImovelById(@RequestParam Long id) {
+        Imovel imovel = locadoraRepository.findById(id).orElse(null);
+
+        if (imovel != null) {
+            return ResponseEntity.ok(imovel);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Editar
+    @PutMapping("/editarImovel")
+    public String editarImovel(@RequestParam Long id, @RequestBody Imovel updatedImovel) {
+        Imovel imovelExistente = locadoraRepository.findById(id).orElse(null);
+
+        double novoValorAluguelDouble = updatedImovel.getValorAluguel();
+        float novoValorAluguelFloat = (float) novoValorAluguelDouble;
+
+        if (imovelExistente != null) {
+
+            imovelExistente.setTitulo(updatedImovel.getTitulo());
+            imovelExistente.setDescricao(updatedImovel.getDescricao());
+            imovelExistente.setValorAluguel(novoValorAluguelFloat);
+            imovelExistente.setCep(updatedImovel.getCep());
+            imovelExistente.setBairro(updatedImovel.getBairro());
+            imovelExistente.setCidade(updatedImovel.getCidade());
+            imovelExistente.setEstado(updatedImovel.getEstado());
+
+            Imovel salvarImovel = locadoraRepository.save(imovelExistente);
+
+            return salvarImovel.getId() + " alterado com sucesso";
+        } else {
+            return "Imóvel do ID " + id + " não encontrado.";
+        }
+    }
+
+
 }
+
+
